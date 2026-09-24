@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Személyes adatok</title>
+<style>
+:root{
+  --bg:#f3f5f8; --panel:#ffffff; --ink:#1b2430; --muted:#5d6b7c; --line:#d5dce6;
+  --accent:#1f5fbf; --accent-ink:#ffffff; --bar:#e6ebf2; --off:#c3ccd8;
+  --bg1:#dbe7f8; --bg2:#f5f8fc; --w1:#b7cff0; --w2:#98b9e6; --w3:#7aa3dc; --shadow:rgba(25,50,100,.10);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171e; --panel:#1b222c; --ink:#e7ecf3; --muted:#9aa8ba; --line:#2d3746;
+    --accent:#6ea3f2; --accent-ink:#0f1720; --bar:#232c38; --off:#3a4556;
+    --bg1:#0c1220; --bg2:#172234; --w1:#1b2a44; --w2:#213456; --w3:#2a4270; --shadow:rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171e; --panel:#1b222c; --ink:#e7ecf3; --muted:#9aa8ba; --line:#2d3746;
+  --accent:#6ea3f2; --accent-ink:#0f1720; --bar:#232c38; --off:#3a4556;
+    --bg1:#0c1220; --bg2:#172234; --w1:#1b2a44; --w2:#213456; --w3:#2a4270; --shadow:rgba(0,0,0,.35);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.bg{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+.bg .a{stop-color:var(--bg1)} .bg .b{stop-color:var(--bg2)}
+.bg .w1{fill:var(--w1)} .bg .w2{fill:var(--w2)} .bg .w3{fill:var(--w3)}
+.photo{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;background-repeat:no-repeat;pointer-events:none}
+.photo[hidden]{display:none}
+.has-photo h1{color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.65)}
+.wrap{position:relative;max-width:1100px;margin:0 auto;padding:28px 20px 40px}
+h1{font-size:2rem;margin:0 0 24px;letter-spacing:-.01em}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+section{box-shadow:0 8px 28px var(--shadow);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;min-width:0}
+h2{font-size:1.15rem;margin:0 0 16px}
+label{display:block;font-weight:600;font-size:.9rem;margin:0 0 4px}
+.field{margin-bottom:14px}
+input{width:100%;padding:10px 12px;font:inherit;color:var(--ink);background:var(--bg);
+  border:1px solid var(--line);border-radius:6px}
+input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:inherit;font-weight:600;padding:10px 22px;border:0;border-radius:6px;
+  background:var(--accent);color:var(--accent-ink);cursor:pointer}
+button:disabled{background:var(--off);color:var(--muted);cursor:not-allowed}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);padding:22px 26px;max-width:min(90vw,380px)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog form{display:flex;gap:8px}
+dialog p{margin:0 0 16px;font-weight:600}
+.banner{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--bar);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:0 0 20px}
+.banner[hidden]{display:none}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+button.sec{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.status{margin:12px 0 0;min-height:1.5em;color:var(--muted);font-size:.9rem}
+.win{margin-top:16px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.bar{background:var(--bar);padding:8px 12px;font-size:.85rem;font-weight:600;display:flex;justify-content:space-between}
+.body{padding:0;max-height:420px;overflow:auto}
+.empty{padding:20px 14px;color:var(--muted);margin:0}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+</style>
+</head>
+<body>
+<svg class="bg" aria-hidden="true" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop class="a" offset="0"/><stop class="b" offset="1"/></linearGradient></defs>
+  <rect width="1440" height="900" fill="url(#g)"/>
+  <circle class="w1" cx="1250" cy="110" r="270" opacity=".28"/>
+  <circle class="w2" cx="150" cy="70" r="190" opacity=".22"/>
+  <path class="w1" opacity=".55" d="M0 640C240 560 480 720 720 660S1200 480 1440 560V900H0Z"/>
+  <path class="w2" opacity=".6" d="M0 720C300 640 520 800 820 740S1290 620 1440 680V900H0Z"/>
+  <path class="w3" opacity=".7" d="M0 800C260 760 560 860 860 810S1300 740 1440 780V900H0Z"/>
+</svg>
+<div class="photo" id="photo" hidden></div>
+<div class="wrap">
+  <h1>Személyes adatok</h1>
+  <div class="banner" id="banner" hidden><span id="bannertxt"></span><button id="bannerbtn" type="button">Adatok betöltése</button></div>
+  <div class="cols">
+    <section aria-labelledby="in-h">
+      <h2 id="in-h">Bevitel</h2>
+      <form id="f" novalidate autocomplete="off">
+        <div class="field"><label for="nev">Név</label><input id="nev" type="text"></div>
+        <div class="field"><label for="uto">Utónév</label><input id="uto" type="text"></div>
+        <div class="field"><label for="szul">Születési dátum</label><input id="szul" type="date"></div>
+        <div class="field"><label for="lak">Lakhely</label><input id="lak" type="text"></div>
+        <div class="field"><label for="fog">Foglalkozás</label><input id="fog" type="text"></div>
+        <button id="kesz" type="submit" disabled>Kész</button>
+        <p class="status" id="st" role="status"></p>
+      </form>
+    </section>
+    <section aria-labelledby="out-h">
+      <h2 id="out-h">Listázás</h2>
+      <div class="actions">
+        <button id="listaz" type="button">Listáz</button>
+        <button id="torol" type="button" class="sec">Lista törlése</button>
+      </div>
+      <p class="status" id="st2" role="status"></p>
+      <div class="win" id="win" hidden>
+        <div class="bar"><span>Mentett adatok</span><span id="cnt"></span></div>
+        <div class="body" id="body"></div>
+      </div>
+    </section>
+  </div>
+</div>
+<dialog id="dup" aria-labelledby="dup-t">
+  <p id="dup-t">Ez a személy már a listában van</p>
+  <form method="dialog"><button autofocus>OK</button></form>
+</dialog>
+<dialog id="del" aria-labelledby="del-t">
+  <p id="del-t">Biztosan törlöd a teljes listát?</p>
+  <form method="dialog"><button value="cancel" class="sec" autofocus>Mégse</button><button value="ok">Törlés</button></form>
+</dialog>
+<script>
+(function(){
+  var ids = ["nev","uto","szul","lak","fog"];
+  var el = {}; ids.forEach(function(i){ el[i] = document.getElementById(i); });
+  var btn = document.getElementById("kesz"), st = document.getElementById("st"), st2 = document.getElementById("st2");
+  var dlg = document.getElementById("dup"), delDlg = document.getElementById("del");
+  var listazBtn = document.getElementById("listaz"), torolBtn = document.getElementById("torol");
+  var banner = document.getElementById("banner"), bannerTxt = document.getElementById("bannertxt"), bannerBtn = document.getElementById("bannerbtn");
+  var FILE = "szemelyes-adatok.json";
+  var FOLDER = "Web_test";
+  var HINT = "C:\\temp\\Web_test";
+  var unsupported = typeof window.showDirectoryPicker !== "function";
+  var records = [];      // az adatok a memóriában; a forrásuk és a tárolójuk a JSON fájl
+  var loaded = false;    // amíg a fájl nincs sikeresen beolvasva, nem írunk bele (nehogy felülírjuk)
+
+  try { el.szul.max = new Date().toISOString().slice(0,10); } catch(e){}
+
+  // Két rekord akkor egyforma, ha mind az öt mező azonos (szóköz és kis/nagybetű nem számít)
+  function keyOf(r){
+    return ids.map(function(k){ return String(r[k]).trim().toLowerCase(); }).join("|");
+  }
+  function fail(msg){ var e = new Error(msg); e.custom = true; return e; }
+  function errMsg(e){
+    if(e && e.custom) return e.message;
+    if(e && e.name === "AbortError") return "Megszakítva.";
+    return "Hiba: " + ((e && (e.message || e.name)) || e);
+  }
+
+  function allFilled(){ return ids.every(function(i){ return el[i].value.trim() !== ""; }); }
+  function refresh(){ btn.disabled = unsupported || !allFilled(); }
+  ids.forEach(function(i){ el[i].addEventListener("input", function(){ st.textContent=""; refresh(); }); });
+
+  function showBanner(txt, label){ bannerTxt.textContent = txt; bannerBtn.textContent = label; banner.hidden = false; }
+
+  // A kiválasztott mappa megjegyzése (IndexedDB)
+  function idb(mode, fn){
+    return new Promise(function(res, rej){
+      var rq = indexedDB.open("szemelyes-adatok-db", 1);
+      rq.onupgradeneeded = function(){ rq.result.createObjectStore("kv"); };
+      rq.onerror = function(){ rej(rq.error); };
+      rq.onsuccess = function(){
+        var tx = rq.result.transaction("kv", mode);
+        var out = fn(tx.objectStore("kv"));
+        tx.oncomplete = function(){ res(out && out.result); };
+        tx.onerror = function(){ rej(tx.error); };
+      };
+    });
+  }
+  function getSaved(){ return idb("readonly", function(s){ return s.get("dir"); }).catch(function(){ return null; }); }
+  function putSaved(h){ return idb("readwrite", function(s){ return s.put(h, "dir"); }).catch(function(){}); }
+
+  // A mappa: elsőre egyszer ki kell választani, utána az oldal megjegyzi
+  var dirHandle = null;
+  async function getDir(){
+    if(!dirHandle) dirHandle = await getSaved();
+    if(dirHandle){
+      var perm = await dirHandle.queryPermission({mode:"readwrite"});
+      if(perm !== "granted") perm = await dirHandle.requestPermission({mode:"readwrite"});
+      if(perm === "granted") return dirHandle;
+    }
+    st2.textContent = "Válaszd ki a " + HINT + " mappát.";
+    var picked = await window.showDirectoryPicker({id:"webtest", mode:"readwrite"});
+    if(picked.name.toLowerCase() !== FOLDER.toLowerCase()){
+      throw fail("Nem a " + FOLDER + " mappát választottad ki. Válaszd ki a " + HINT + " mappát.");
+    }
+    dirHandle = picked;
+    await putSaved(dirHandle);
+    return dirHandle;
+  }
+
+  function parseRecords(text){
+    if(text.trim() === "") return {list:[], skipped:0};
+    var data;
+    try { data = JSON.parse(text); }
+    catch(e){ throw fail("A " + FILE + " nem érvényes JSON, ezért nem töltöm be és nem írom felül."); }
+    if(!Array.isArray(data)) throw fail("A " + FILE + " formátuma nem megfelelő (rekordok listáját várjuk).");
+    var list = [], skipped = 0, seen = {};
+    data.forEach(function(r){
+      var ok = r && typeof r === "object" && ids.every(function(k){
+        return typeof r[k] === "string" && r[k].trim() !== "";
+      }) && /^\d{4}-\d{2}-\d{2}$/.test(r.szul);
+      if(!ok){ skipped++; return; }
+      var rec = {}; ids.forEach(function(k){ rec[k] = r[k].trim(); });
+      var key = keyOf(rec);
+      if(seen[key]){ skipped++; return; }
+      seen[key] = 1; list.push(rec);
+    });
+    return {list:list, skipped:skipped};
+  }
+
+  async function writeFile(list){
+    var dir = await getDir();
+    var fh = await dir.getFileHandle(FILE, {create:true});
+    var w = await fh.createWritable();
+    await w.write(JSON.stringify(list, null, 2));
+    await w.close();
+    return dir;
+  }
+  async function fileExists(dir){
+    try { await dir.getFileHandle(FILE); return true; }
+    catch(e){ if(e && e.name === "NotFoundError") return false; throw e; }
+  }
+
+  // Betöltés a JSON fájlból. Ha a fájl nem létezik: "Nincs még bejegyzés".
+  async function loadFromFile(){
+    var dir = await getDir();
+    var text;
+    try {
+      var fh = await dir.getFileHandle(FILE);
+      text = await (await fh.getFile()).text();
+    } catch(e){
+      if(e && e.name === "NotFoundError"){
+        records = []; loaded = true; banner.hidden = true;
+        st2.textContent = "Nincs még bejegyzés";
+        render();
+        return;
+      }
+      throw e;
+    }
+    var res = parseRecords(text);   // hibás fájlnál itt megáll, és nem írunk semmit
+    records = res.list; loaded = true; banner.hidden = true;
+    st2.textContent = records.length + " rekord betöltve: " + dir.name + "\\" + FILE +
+      (res.skipped ? " (" + res.skipped + " hibás vagy ismétlődő rekord kihagyva)." : ".");
+    if(!records.length) render();
+  }
+
+  async function ensureLoaded(){
+    if(loaded) return true;
+    if(unsupported) return false;
+    try { await loadFromFile(); return loaded; }
+    catch(e){ st2.textContent = errMsg(e); return false; }
+  }
+
+  function fmtDate(iso){
+    var p = iso.split("-");
+    return p.length === 3 ? p[0] + ". " + p[1] + ". " + p[2] + "." : iso;
+  }
+  function winVisible(){ return !document.getElementById("win").hidden; }
+
+  // Listázás Név (majd Utónév) szerint rendezve
+  function render(){
+    var list = records.slice().sort(function(a,b){
+      return a.nev.localeCompare(b.nev, "hu") || a.uto.localeCompare(b.uto, "hu");
+    });
+    var win = document.getElementById("win"), body = document.getElementById("body");
+    document.getElementById("cnt").textContent = list.length + " rekord";
+    body.textContent = "";
+    if(!list.length){
+      var p = document.createElement("p");
+      p.className = "empty"; p.textContent = "Nincs még bejegyzés";
+      body.appendChild(p);
+    } else {
+      var t = document.createElement("table");
+      var hr = t.createTHead().insertRow();
+      ["Név","Utónév","Születési dátum","Lakhely","Foglalkozás"].forEach(function(h){
+        var th = document.createElement("th"); th.textContent = h; hr.appendChild(th);
+      });
+      var tb = t.createTBody();
+      list.forEach(function(r){
+        var tr = tb.insertRow();
+        [r.nev, r.uto, fmtDate(r.szul), r.lak, r.fog].forEach(function(v){ tr.insertCell().textContent = v; });
+      });
+      body.appendChild(t);
+    }
+    win.hidden = false;
+  }
+
+  // Új rekord: ellenőrzés, majd automatikus mentés (felülírás) a JSON fájlba
+  document.getElementById("f").addEventListener("submit", async function(ev){
+    ev.preventDefault();
+    if(!allFilled() || unsupported) return;
+    btn.disabled = true;
+    try {
+      if(!(await ensureLoaded())) { refresh(); return; }
+      var rec = {
+        nev: el.nev.value.trim(), uto: el.uto.value.trim(), szul: el.szul.value,
+        lak: el.lak.value.trim(), fog: el.fog.value.trim()
+      };
+      if(records.some(function(r){ return keyOf(r) === keyOf(rec); })){
+        st.textContent = "";
+        if(dlg.showModal) dlg.showModal(); else alert("Ez a személy már a listában van");
+        refresh(); return;
+      }
+      var next = records.concat([rec]);
+      var dir = await writeFile(next);   // ha ez hibázik, a rekord nem kerül be
+      records = next;
+      ids.forEach(function(i){ el[i].value = ""; });
+      st.textContent = "Elmentve a fájlba: " + dir.name + "\\" + FILE;
+      if(winVisible()) render();
+      el.nev.focus();
+    } catch(e){ st.textContent = errMsg(e); }
+    refresh();
+  });
+
+  listazBtn.addEventListener("click", async function(){
+    if(!(await ensureLoaded())) return;
+    render();
+  });
+
+  function confirmDelete(){
+    return new Promise(function(res){
+      delDlg.returnValue = "";
+      delDlg.addEventListener("close", function h(){
+        delDlg.removeEventListener("close", h);
+        res(delDlg.returnValue === "ok");
+      });
+      delDlg.showModal();
+    });
+  }
+
+  // Lista törlése: a JSON fájl tartalma üres listára ("[]") cserélődik; ha nincs fájl: "Nincs lista"
+  torolBtn.addEventListener("click", async function(){
+    if(!(await ensureLoaded())) return;
+    try {
+      var dir = await getDir();
+      if(!(await fileExists(dir)) || !records.length){
+        records = [];
+        st2.textContent = "Nincs lista";
+        if(winVisible()) render();
+        return;
+      }
+      if(!(await confirmDelete())) return;
+      await writeFile([]);
+      records = [];
+      st2.textContent = "A lista törölve.";
+      if(winVisible()) render();
+    } catch(e){ st2.textContent = errMsg(e); }
+  });
+
+  bannerBtn.addEventListener("click", async function(){
+    try { await loadFromFile(); } catch(e){ st2.textContent = errMsg(e); }
+  });
+
+  // Háttérkép: ha nem található, a beágyazott SVG háttér marad
+  var PHOTO_NAME = "vecteezy_magnifying-glass-revealing-a-dense-crowd-during-sunset_50116019.jpeg";
+  var PHOTOS = ["file:///C:/temp/Web_test/" + PHOTO_NAME, PHOTO_NAME];   // teljes útvonal, majd a HTML melletti mappa
+  (function tryPhoto(i){
+    if(i >= PHOTOS.length) return;
+    var probe = new Image();
+    probe.onload = function(){
+      var ph = document.getElementById("photo");
+      ph.style.backgroundImage = 'linear-gradient(rgba(8,14,26,.38),rgba(8,14,26,.38)),url("' + PHOTOS[i] + '")';
+      ph.hidden = false;
+      document.documentElement.classList.add("has-photo");
+    };
+    probe.onerror = function(){ tryPhoto(i + 1); };
+    probe.src = PHOTOS[i];
+  })(0);
+
+  // Indításkor: automatikus betöltés a JSON fájlból
+  (async function init(){
+    refresh();
+    if(unsupported){
+      listazBtn.disabled = true; torolBtn.disabled = true;
+      st2.textContent = "Ehhez az oldalhoz Chrome vagy Edge böngésző szükséges, mert a többi nem tud közvetlenül a " + HINT + " mappába menteni.";
+      return;
+    }
+    try {
+      var saved = await getSaved();
+      if(!saved){ showBanner("Első indítás: válaszd ki a " + HINT + " mappát, innen töltöm be az adatokat.", "Mappa kiválasztása"); return; }
+      dirHandle = saved;
+      var perm = await saved.queryPermission({mode:"readwrite"});
+      if(perm === "granted") await loadFromFile();
+      else showBanner("A böngésző megerősítést kér a " + HINT + " mappa eléréséhez.", "Adatok betöltése");
+    } catch(e){ st2.textContent = errMsg(e); }
+  })();
+})();
+</script>
+</body>
+</html>
